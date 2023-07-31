@@ -1032,22 +1032,13 @@ def gate_objectives(
     return objectives
 
 
-def _gate_objectives_li_pe(basis_states, gate, H, c_ops):
+def _gate_objectives_li_pe(basis_states_bell, gate, H, c_ops):
     """Objectives for two-qubit local-invariants or perfect-entangler
     optimizaton"""
-    if len(basis_states) != 4:
-        raise ValueError(
-            "Optimization towards a two-qubit gate requires 4 basis_states"
-        )
-    # Bell states as in "Theorem 1" in
-    # Y. Makhlin, Quantum Inf. Process. 1, 243 (2002)
-    psi1 = (basis_states[0] + basis_states[3]) / np.sqrt(2)
-    psi2 = (1j * basis_states[1] + 1j * basis_states[2]) / np.sqrt(2)
-    psi3 = (basis_states[1] - basis_states[2]) / np.sqrt(2)
-    psi4 = (1j * basis_states[0] - 1j * basis_states[3]) / np.sqrt(2)
+   
     return [
-        Objective(initial_state=psi, target=gate, H=H, c_ops=c_ops)
-        for psi in [psi1, psi2, psi3, psi4]
+        Objective(initial_state=basis_states_bell[i], target=gate, H=H, c_ops=c_ops)
+        for i in range(len(basis_states_bell))
     ]
 
 
