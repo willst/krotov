@@ -463,17 +463,18 @@ def optimize_pulses(
                         time_index,
                     )
                     Ψ = fw_states[i_obj]
+                    Ψ.dims=[[2,2],[2,2]]
+
                     update = overlap(χ, μ(Ψ))  # ⟨χ|μ|Ψ⟩ ∈ ℂ
                     update *= chi_norms[i_obj]
                     if second_order:
+                        delta_phis[i_obj].dims = μ(Ψ).dims
                         update += 0.5 * σ * overlap(delta_phis[i_obj], μ(Ψ))
                     delta_eps[i_pulse][time_index] += update
                 λₐ = lambda_vals[i_pulse]
                 S_t = shape_arrays[i_pulse][time_index]
-                Δϵ_1 = delta_eps[i_pulse][time_index].imag  # for "step size" 1
-                Δϵ = (S_t / λₐ) * Δϵ_1  # ∈ ℝ
-                g_a_integrals[i_pulse] += (S_t / λₐ) * abs(Δϵ_1) ** 2 * dt
-                # dt may vary! -- hence we've included it in each summand
+                Δϵ = (S_t / λₐ) * delta_eps[i_pulse][time_index].imag  # ∈ ℝ
+                g_a_integrals[i_pulse] += abs(Δϵ) ** 2 * dt  # dt may vary!
                 optimized_pulses[i_pulse][time_index] += Δϵ
             # forward propagation
             fw_states = parallel_map[2](

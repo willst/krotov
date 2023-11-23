@@ -49,7 +49,7 @@ dev_requirements = [
     'isort==4.3.*',
     'jupyter',
     'loky',
-    'matplotlib',
+    'matplotlib<3.8',
     'nbsphinx',
     'nbval',
     'pre-commit',
